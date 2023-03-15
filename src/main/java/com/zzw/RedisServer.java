@@ -147,7 +147,6 @@ public class RedisServer {
 
             return redisClient;
         }
-
         return null;
     }
 
