@@ -19,6 +19,7 @@ public class selectCommand implements redisCommand {
         String[] argv = client.getArgv();
 
         int dbIdx = 0;// 2
+
         try {
             dbIdx = Integer.parseInt(argv[1]);
         } catch (NumberFormatException e) {
@@ -26,6 +27,7 @@ public class selectCommand implements redisCommand {
         }
 
         if(dbIdx<1||dbIdx>16) return "SELECT_"+REDIS_REPLY_FAIL;
+
 
         redisDB[] redisDBs = redisServer.getRedisDBs();
         redisDB redisDB = redisDBs[dbIdx - 1];

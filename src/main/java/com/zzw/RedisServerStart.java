@@ -17,6 +17,8 @@ public class RedisServerStart {
 
     public static redisServer redisServer;
 
+    public static redisClient redisClient;
+
     OutputStream outputStream;
 
     public RedisServerStart(int port) throws Exception {
@@ -36,7 +38,10 @@ public class RedisServerStart {
 
             System.out.println("接收到客户端请求:"+clientSocket.getPort());
 
+
             if(clientSocket!=null&&!clientSocket.isClosed()){
+
+
 
                 //构建任务
                 Runnable work =()->{
@@ -89,9 +94,8 @@ public class RedisServerStart {
 
         System.out.println(s);
 
-
         //把RESP文件解析
-        redisClient redisClient = decodeRESP(s);
+        redisClient = decodeRESP(s);
 
         if(redisClient==null){
             responseToClient("ERR unknown command"+"\r\n");
@@ -126,20 +130,11 @@ public class RedisServerStart {
                 System.out.println("args:"+argv[i]);
             }
 
-            redisCommand redisCommand =null;
+            redisClient.setArgc(argc);
+            redisClient.setArgv(argv);
+            redisClient.setQueryBuf(s);
 
-            //封装redisClient对象
-
-           // System.out.println("初始化状态");
-            redisClient    redisClient = new redisClient(s,argv,argc);
-            redisDB[] redisDBs = redisServer.getRedisDBs();
-            redisDB redisDB = redisDBs[REDIS_DB_DEFAULT_INDEX];
-            redisClient.setDb(redisDB);
-//            redisClient.setDbIdx(REDIS_DB_DEFAULT_INDEX);
-//            System.out.println("DBIDX:"+redisClient.getDbIdx());
-
-
-            redisCommand =  findCmdFunction(redisClient);
+            redisCommand redisCommand =  findCmdFunction(redisClient);
 
             if(redisCommand==null) return null;
 
@@ -219,5 +214,11 @@ public class RedisServerStart {
     private static void InitRedisConfig() {
         cmdDict dict= new cmdDict();
         redisServer = new redisServer();
+        redisClient = new redisClient();
+
+        redisDB[] redisDBs = redisServer.getRedisDBs();
+        redisDB redisDB = redisDBs[REDIS_DB_DEFAULT_INDEX];
+        redisClient.setDb(redisDB);
+        redisClient.setDbIdx(REDIS_DB_DEFAULT_INDEX);
     }
 }
