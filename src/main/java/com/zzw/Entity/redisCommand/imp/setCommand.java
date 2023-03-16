@@ -14,10 +14,13 @@ public class setCommand implements redisCommand {
         String[] argv = client.getArgv();
         String key = argv[1];
         String value = argv[2];
+
         String res = MAP.put(key, value);
+
         if(res==null){
             System.out.println("插入成功");
         }
+
         return res;
     }
 }

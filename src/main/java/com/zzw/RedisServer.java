@@ -1,18 +1,12 @@
 package com.zzw;
-
 import com.zzw.Entity.redisClient;
-import com.zzw.Entity.redisCommand.imp.setCommand;
 import com.zzw.Entity.redisCommand.redisCommand;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.zzw.Entity.cmdDict;
-
 import static com.zzw.Entity.cmdDict.cmdDict;
 import static com.zzw.redis_constant.CRLF;
 import static com.zzw.redis_constant.REDIS_REPLY_OK;
@@ -110,11 +104,6 @@ public class RedisServer {
 
     }
 
-    // *2
-    // $3 1
-    // set 2
-    // $2 3
-    // k1
     private redisClient decodeRESP(String s) {
         if(s.charAt(0)=='*'){
             //List<List<String>> decodeList = new ArrayList<>();
@@ -206,7 +195,7 @@ public class RedisServer {
 
     public static void main(String[] args) throws Exception {
         InitRedisConfig();
-        RedisServer redisServer = new RedisServer(6364);
+        RedisServer redisServer = new RedisServer(6366);
     }
 
     private static void InitRedisConfig() {
