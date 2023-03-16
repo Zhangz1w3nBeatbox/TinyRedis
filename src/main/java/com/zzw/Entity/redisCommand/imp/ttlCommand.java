@@ -36,7 +36,6 @@ public class ttlCommand implements redisCommand {
             return "TTL_ARGS_"+REDIS_REPLY_FAIL;
         }
 
-
         Long expireTime = dbExpiresDict.get(key);
         Long currTime = new Date().getTime();
 
