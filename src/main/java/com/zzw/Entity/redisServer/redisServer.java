@@ -13,7 +13,6 @@ public class redisServer {
 
     int dbnNum;
 
-
     public redisServer() {
         redisDBs = new redisDB[16];
         for(int i=0;i<16;++i){
