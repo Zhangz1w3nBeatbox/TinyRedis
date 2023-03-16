@@ -8,8 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.zzw.Entity.cmdDict;
 import static com.zzw.Entity.cmdDict.cmdDict;
-import static com.zzw.redis_constant.CRLF;
-import static com.zzw.redis_constant.REDIS_REPLY_OK;
+import static com.zzw.redis_constant.*;
 
 public class RedisServer {
 
@@ -85,21 +84,16 @@ public class RedisServer {
 
         System.out.println(s);
 
-
-
         //把RESP文件解析
         redisClient redisClient = decodeRESP(s);
 
-        //处理解析后的文件
-        String msg = handle(redisClient);
-
-        //回复
-        if(msg==null){
-            responseToClient(REDIS_REPLY_OK);
-        }else {
-            responseToClient(msg+"\r\n");
+        if(redisClient==null){
+            responseToClient("ERR unknown command"+"\r\n");
+        } else {
+            //处理解析后的文件
+            String msg = handle(redisClient);
+            responseToClient(msg);
         }
-
 
 
     }
@@ -123,7 +117,7 @@ public class RedisServer {
             }
 
             for (int i = 0; i < argc; i++) {
-                System.out.println(argv[i]);
+                System.out.println("args:"+argv[i]);
             }
 
             //封装redisClient对象
@@ -131,6 +125,8 @@ public class RedisServer {
 
             //去哈希表中查找 命令对应的执行操作
             redisCommand redisCommand =  findCmdFunction(redisClient);
+
+            if(redisCommand==null) return null;
 
             redisClient.setCmd(redisCommand);
 
@@ -146,11 +142,13 @@ public class RedisServer {
     }
 
     private redisCommand findCmdFunction(redisClient client) {
+
         String[] argv = client.getArgv();
         String cmd = argv[0];
         System.out.println(cmd);
 
         redisCommand redisCommand = cmdDict.get(cmd);
+
 
         return redisCommand;
     }
