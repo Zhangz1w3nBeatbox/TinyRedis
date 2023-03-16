@@ -1,14 +1,12 @@
 package com.zzw.Entity.redisCommand.imp;
 
-import com.zzw.Entity.redisClient;
+import com.zzw.Entity.redisClient.redisClient;
 import com.zzw.Entity.redisCommand.redisCommand;
 import com.zzw.Entity.redisServer.redisDB;
 
-import java.util.Map;
-
 import static com.zzw.RedisServerStart.redisServer;
-import static com.zzw.redis_constant.REDIS_REPLY_FAIL;
-import static com.zzw.redis_constant.REDIS_REPLY_OK;
+import static com.zzw.Constans.redis_constant.REDIS_REPLY_FAIL;
+import static com.zzw.Constans.redis_constant.REDIS_REPLY_OK;
 
 public class selectCommand implements redisCommand {
 
@@ -26,7 +24,7 @@ public class selectCommand implements redisCommand {
             return "SELECT_TRANSFER_"+REDIS_REPLY_FAIL;
         }
 
-        if(dbIdx<1||dbIdx>16) return "SELECT_"+REDIS_REPLY_FAIL;
+        if(dbIdx<1||dbIdx>16) return "SELECT_IDX_"+REDIS_REPLY_FAIL;
 
 
         redisDB[] redisDBs = redisServer.getRedisDBs();

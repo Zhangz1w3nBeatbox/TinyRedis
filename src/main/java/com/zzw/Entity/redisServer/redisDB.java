@@ -14,13 +14,13 @@ public class redisDB {
 
 
     //过期字典
-    Map<String,String> expires = new HashMap<>();
+    Map<String,Long> expires = new HashMap<>();
 
-    public Map<String, String> getExpires() {
+    public Map<String, Long> getExpires() {
         return expires;
     }
 
-    public void setExpires(Map<String, String> expires) {
+    public void setExpires(Map<String, Long> expires) {
         this.expires = expires;
     }
 

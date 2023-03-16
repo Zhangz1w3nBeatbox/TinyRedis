@@ -1,4 +1,4 @@
-package com.zzw.Entity;
+package com.zzw.Entity.redisClient;
 
 import com.zzw.Entity.redisCommand.redisCommand;
 import com.zzw.Entity.redisServer.redisDB;
@@ -6,8 +6,8 @@ import com.zzw.Entity.redisStruct.ListNode;
 
 import java.util.Date;
 
-import static com.zzw.redis_constant.REDIS_AUTH_TRUE;
-import static com.zzw.redis_constant.REDIS_REPLY_CHUNK_BYTES;
+import static com.zzw.Constans.redis_constant.REDIS_AUTH_TRUE;
+import static com.zzw.Constans.redis_constant.REDIS_REPLY_CHUNK_BYTES;
 
 // redis客户端对象
 public class redisClient {

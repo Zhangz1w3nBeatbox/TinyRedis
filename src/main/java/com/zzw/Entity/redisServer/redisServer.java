@@ -1,6 +1,6 @@
 package com.zzw.Entity.redisServer;
 
-import com.zzw.Entity.redisClient;
+import com.zzw.Entity.redisClient.redisClient;
 import com.zzw.Entity.redisStruct.ListNode;
 
 

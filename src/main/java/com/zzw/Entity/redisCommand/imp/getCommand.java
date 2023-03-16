@@ -1,14 +1,12 @@
 package com.zzw.Entity.redisCommand.imp;
 
-import com.zzw.Entity.redisClient;
+import com.zzw.Entity.redisClient.redisClient;
 import com.zzw.Entity.redisCommand.redisCommand;
 import com.zzw.Entity.redisServer.redisDB;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static com.zzw.redis_constant.REDIS_REPLY_FAIL;
-import static com.zzw.redis_constant.REDIS_REPLY_OK;
+import static com.zzw.Constans.redis_constant.REDIS_REPLY_FAIL;
 
 public class getCommand implements redisCommand {
 

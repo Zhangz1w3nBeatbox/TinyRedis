@@ -1,11 +1,10 @@
 package com.zzw.Entity.redisCommand.imp;
 
-import com.zzw.Entity.redisClient;
+import com.zzw.Entity.redisClient.redisClient;
 import com.zzw.Entity.redisCommand.redisCommand;
 import com.zzw.Entity.redisServer.redisDB;
-import com.zzw.redis_constant;
+import com.zzw.Constans.redis_constant;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class setCommand implements redisCommand {
@@ -27,7 +26,6 @@ public class setCommand implements redisCommand {
         }
 
         redisDB db = client.getDb();
-        int dbIdx = client.getDbIdx();
         Map<String, String> MAP = db.getDict();
 
         String res = MAP.put(key, value);

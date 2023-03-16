@@ -1,4 +1,4 @@
-package com.zzw;
+package com.zzw.Constans;
 
 // redis 常量类
 public class redis_constant {

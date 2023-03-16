@@ -1,19 +1,23 @@
 package com.zzw;
-import com.zzw.Entity.redisClient;
+import com.zzw.Entity.redisClient.redisClient;
 import com.zzw.Entity.redisCommand.redisCommand;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.zzw.Entity.cmdDict;
+import com.zzw.Entity.commanDict.cmdDict;
 import com.zzw.Entity.redisServer.redisDB;
 import com.zzw.Entity.redisServer.redisServer;
 
-import static com.zzw.Entity.cmdDict.cmdDict;
-import static com.zzw.redis_constant.*;
+import static com.zzw.Entity.commanDict.cmdDict.cmdDict;
+import static com.zzw.Constans.redis_constant.*;
 
 public class RedisServerStart {
+
+    static {
+        InitRedisConfig();
+    }
 
     public static redisServer redisServer;
 
@@ -22,12 +26,16 @@ public class RedisServerStart {
     OutputStream outputStream;
 
     public RedisServerStart(int port) throws Exception {
+        startRedisService(port);
+    }
 
-        if(port<1||port>65535) throw new Exception("端口异常!");
+    private void startRedisService(int port) throws Exception {
+
+        if(port <1|| port >65535) throw new Exception("端口异常!");
 
         ServerSocket serverSocket = new ServerSocket(port);
 
-        System.out.println("服务器已经启动 正在监听"+port+"端口");
+        System.out.println("服务器已经启动 正在监听"+ port +"端口");
 
         //使用线程池 处理并发的请求
         ExecutorService threadPool = Executors.newFixedThreadPool(50);
@@ -40,8 +48,6 @@ public class RedisServerStart {
 
 
             if(clientSocket!=null&&!clientSocket.isClosed()){
-
-
 
                 //构建任务
                 Runnable work =()->{
@@ -57,7 +63,6 @@ public class RedisServerStart {
             }
 
         }
-
     }
 
     private void handleClientRequest(Socket clientSocket) throws IOException {
@@ -72,8 +77,6 @@ public class RedisServerStart {
 
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-
-
         bufferedReader.lines().forEach(s-> {
             try {
                 handleLine(s);
@@ -86,7 +89,6 @@ public class RedisServerStart {
     }
 
     private void handleLine(String s) throws IOException {
-
         //resp
         s = encodeRESP(s);
 
@@ -109,9 +111,7 @@ public class RedisServerStart {
     }
 
     private redisClient decodeRESP(String s) {
-
         //   *2/r/n$6/r/nselect/r/n$1/r/n1/r/n
-
         if(s.charAt(0)=='*'){
 
             String[] strArr = s.split(CRLF);
@@ -126,20 +126,18 @@ public class RedisServerStart {
                argv[idx++] = strArr[i+1];
             }
 
-            for (int i = 0; i < argc; i++) {
-                System.out.println("args:"+argv[i]);
-            }
-
             redisClient.setArgc(argc);
             redisClient.setArgv(argv);
             redisClient.setQueryBuf(s);
 
-            redisCommand redisCommand =  findCmdFunction(redisClient);
+            redisCommand redisCommand = findCmdFunction(redisClient);
 
             if(redisCommand==null) return null;
 
             redisClient.setCmd(redisCommand);
+
             String msg = handle(redisClient);
+
             redisClient.setOutBuf(new String[]{msg});
 
             return redisClient;
@@ -155,13 +153,8 @@ public class RedisServerStart {
     }
 
     private redisCommand findCmdFunction(redisClient client) {
-        System.out.println("进入findCmdFunction");
         String[] argv = client.getArgv();
-        for(String s:argv){
-            System.out.println(s);
-        }
         String cmd = argv[0];
-        System.out.println(cmd);
 
         redisCommand redisCommand = cmdDict.get(cmd);
 
@@ -207,8 +200,7 @@ public class RedisServerStart {
     }
 
     public static void main(String[] args) throws Exception {
-        InitRedisConfig();
-        RedisServerStart redisServerStart = new RedisServerStart(6366);
+        new RedisServerStart(6366);
     }
 
     private static void InitRedisConfig() {

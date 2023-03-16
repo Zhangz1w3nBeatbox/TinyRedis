@@ -1,10 +1,9 @@
-package com.zzw.Entity;
+package com.zzw.Entity.commanDict;
 
 import com.zzw.Entity.redisCommand.imp.*;
 import com.zzw.Entity.redisCommand.imp.setCommand;
 import com.zzw.Entity.redisCommand.redisCommand;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +17,8 @@ public class cmdDict {
         cmdDict.put("get",new getCommand());
         cmdDict.put("del",new delCommand());
         cmdDict.put("select",new selectCommand());
+        cmdDict.put("expire",new expireCommand());
+        cmdDict.put("ttl",new ttlCommand());
     }
 
 
