@@ -7,14 +7,19 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.zzw.Entity.cmdDict;
+import com.zzw.Entity.redisServer.redisDB;
+import com.zzw.Entity.redisServer.redisServer;
+
 import static com.zzw.Entity.cmdDict.cmdDict;
 import static com.zzw.redis_constant.*;
 
-public class RedisServer {
+public class RedisServerStart {
+
+    public static redisServer redisServer;
 
     OutputStream outputStream;
 
-    public RedisServer(int port) throws Exception {
+    public RedisServerStart(int port) throws Exception {
 
         if(port<1||port>65535) throw new Exception("端口异常!");
 
@@ -84,6 +89,7 @@ public class RedisServer {
 
         System.out.println(s);
 
+
         //把RESP文件解析
         redisClient redisClient = decodeRESP(s);
 
@@ -91,7 +97,7 @@ public class RedisServer {
             responseToClient("ERR unknown command"+"\r\n");
         } else {
             //处理解析后的文件
-            String msg = handle(redisClient);
+            String msg = redisClient.getOutBuf()[0];
             responseToClient(msg);
         }
 
@@ -99,8 +105,11 @@ public class RedisServer {
     }
 
     private redisClient decodeRESP(String s) {
+
+        //   *2/r/n$6/r/nselect/r/n$1/r/n1/r/n
+
         if(s.charAt(0)=='*'){
-            //List<List<String>> decodeList = new ArrayList<>();
+
             String[] strArr = s.split(CRLF);
 
             int argc = strArr[0].charAt(1) - '0';
@@ -110,28 +119,37 @@ public class RedisServer {
             int idx=0;
 
             for(int i=1;i<strArr.length;i=i+2){
-                //String unit = strArr[i];
-                //int argLen = unit.charAt(1) - '0';
-                //decodeList.add(new ArrayList<>(Arrays.asList(String.valueOf(argLen),strArr[i+1])));
-                argv[idx++] = strArr[i+1];
+               argv[idx++] = strArr[i+1];
             }
 
             for (int i = 0; i < argc; i++) {
                 System.out.println("args:"+argv[i]);
             }
 
-            //封装redisClient对象
-            redisClient redisClient = new redisClient(s,argv,argc);
+            redisCommand redisCommand =null;
 
-            //去哈希表中查找 命令对应的执行操作
-            redisCommand redisCommand =  findCmdFunction(redisClient);
+            //封装redisClient对象
+
+           // System.out.println("初始化状态");
+            redisClient    redisClient = new redisClient(s,argv,argc);
+            redisDB[] redisDBs = redisServer.getRedisDBs();
+            redisDB redisDB = redisDBs[REDIS_DB_DEFAULT_INDEX];
+            redisClient.setDb(redisDB);
+//            redisClient.setDbIdx(REDIS_DB_DEFAULT_INDEX);
+//            System.out.println("DBIDX:"+redisClient.getDbIdx());
+
+
+            redisCommand =  findCmdFunction(redisClient);
 
             if(redisCommand==null) return null;
 
             redisClient.setCmd(redisCommand);
+            String msg = handle(redisClient);
+            redisClient.setOutBuf(new String[]{msg});
 
             return redisClient;
         }
+
         return null;
     }
 
@@ -142,13 +160,15 @@ public class RedisServer {
     }
 
     private redisCommand findCmdFunction(redisClient client) {
-
+        System.out.println("进入findCmdFunction");
         String[] argv = client.getArgv();
+        for(String s:argv){
+            System.out.println(s);
+        }
         String cmd = argv[0];
         System.out.println(cmd);
 
         redisCommand redisCommand = cmdDict.get(cmd);
-
 
         return redisCommand;
     }
@@ -193,10 +213,11 @@ public class RedisServer {
 
     public static void main(String[] args) throws Exception {
         InitRedisConfig();
-        RedisServer redisServer = new RedisServer(6366);
+        RedisServerStart redisServerStart = new RedisServerStart(6366);
     }
 
     private static void InitRedisConfig() {
         cmdDict dict= new cmdDict();
+        redisServer = new redisServer();
     }
 }

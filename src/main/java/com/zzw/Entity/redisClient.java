@@ -1,6 +1,7 @@
 package com.zzw.Entity;
 
 import com.zzw.Entity.redisCommand.redisCommand;
+import com.zzw.Entity.redisServer.redisDB;
 import com.zzw.Entity.redisStruct.ListNode;
 
 import java.util.Date;
@@ -11,7 +12,12 @@ import static com.zzw.redis_constant.REDIS_REPLY_CHUNK_BYTES;
 // redis客户端对象
 public class redisClient {
 
-    int fd; //TAO
+    //客户端正在使用的数据库
+    redisDB db;
+
+    int dbIdx;
+
+    int fd; //套接字描述符
 
     String name;
 
@@ -41,7 +47,13 @@ public class redisClient {
 
     Date outBuf_soft_limit_reached_time;//数据缓冲区第一次到达软性限制的时间
 
+    public redisClient(){
+
+    }
+
+
     public redisClient(String queryBuf, String[] argv, int argc) {
+        this.dbIdx=0;
         this.queryBuf = queryBuf;
         this.argv = argv;
         this.argc = argc;
@@ -159,7 +171,24 @@ public class redisClient {
         this.outBuf_soft_limit_reached_time = outBuf_soft_limit_reached_time;
     }
 
+    public redisDB getDb() {
+        return db;
+    }
+
+    public void setDb(redisDB db) {
+        this.db = db;
+    }
+
+    public int getDbIdx() {
+        return dbIdx;
+    }
+
+    public void setDbIdx(int dbIdx) {
+        this.dbIdx = dbIdx;
+    }
+
     public redisClient(int fd, String name, int flag, String queryBuf, String[] argv, int argc, redisCommand cmd, String[] outBuf, int outBufPos, ListNode<String> reply, int authenticated, Date creat_Time, Date last_interaction_Time, Date outBuf_soft_limit_reached_time) {
+        this.dbIdx=0;
         this.fd = fd;
         this.name = name;
         this.flag = flag;

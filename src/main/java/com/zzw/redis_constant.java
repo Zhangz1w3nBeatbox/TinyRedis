@@ -23,4 +23,8 @@ public class redis_constant {
     //回复相关
     public static final String REDIS_REPLY_OK = "OK"+"\r\n";
     public static final String REDIS_REPLY_FAIL = "FAIL"+"\r\n";
+
+
+    //redisDB相关
+    public static final int REDIS_DB_DEFAULT_INDEX = 0;
 }

@@ -1,8 +1,6 @@
 package com.zzw.Entity;
 
-import com.zzw.Entity.redisCommand.imp.delCommand;
-import com.zzw.Entity.redisCommand.imp.getCommand;
-import com.zzw.Entity.redisCommand.imp.setCommand;
+import com.zzw.Entity.redisCommand.imp.*;
 import com.zzw.Entity.redisCommand.imp.setCommand;
 import com.zzw.Entity.redisCommand.redisCommand;
 
@@ -19,6 +17,7 @@ public class cmdDict {
         cmdDict.put("set",new setCommand());
         cmdDict.put("get",new getCommand());
         cmdDict.put("del",new delCommand());
+        cmdDict.put("select",new selectCommand());
     }
 
 

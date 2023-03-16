@@ -7,8 +7,6 @@ import java.util.Map;
 
 public interface redisCommand {
 
-    Map<String,String> MAP = new HashMap<>();
-
     String name = null;
 
     String execute(redisClient client);

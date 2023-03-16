@@ -2,6 +2,7 @@ package com.zzw.Entity.redisCommand.imp;
 
 import com.zzw.Entity.redisClient;
 import com.zzw.Entity.redisCommand.redisCommand;
+import com.zzw.Entity.redisServer.redisDB;
 import com.zzw.redis_constant;
 
 import java.util.HashMap;
@@ -9,23 +10,25 @@ import java.util.Map;
 
 public class setCommand implements redisCommand {
 
+
     @Override
     public String execute(redisClient client) {
         //
-        System.out.println("处理set");
         String[] argv = client.getArgv();
 
         String key = null;
         String value = null;
 
-
         try {
             key = argv[1];
             value = argv[2];
         } catch (Exception e) {
-            System.out.println("参数类型错误出现异常");
             return "PUT_"+redis_constant.REDIS_REPLY_FAIL;
         }
+
+        redisDB db = client.getDb();
+        int dbIdx = client.getDbIdx();
+        Map<String, String> MAP = db.getDict();
 
         String res = MAP.put(key, value);
 
@@ -33,6 +36,6 @@ public class setCommand implements redisCommand {
             return "PUT_"+redis_constant.REDIS_REPLY_OK;
         }
 
-         return "UPDATE_"+redis_constant.REDIS_REPLY_OK;
+        return "UPDATE_"+redis_constant.REDIS_REPLY_OK;
     }
 }
