@@ -27,4 +27,7 @@ public class redis_constant {
 
     //redisDB相关
     public static final int REDIS_DB_DEFAULT_INDEX = 0;
+
+    //Expires过期时间
+    public static final int REDIS_EXPIRES_DEFAULT_TIME_VALUE = 15;
 }

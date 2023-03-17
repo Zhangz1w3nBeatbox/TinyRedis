@@ -1,11 +1,16 @@
 package com.zzw.Entity.redisServer;
 
 import com.zzw.Entity.redisClient.redisClient;
-import com.zzw.Entity.redisStruct.ListNode;
+import com.zzw.Entity.redisStruct.redisList.imp.ListNode;
+import com.zzw.Entity.redisStruct.redisList.redisList;
+import com.zzw.Entity.redisStruct.redisObject;
+
+import java.util.List;
 
 
 //redis 服务器状态
 public class redisServer {
+
     ListNode<redisClient> clients;
 
     redisDB[] redisDBs;
@@ -13,13 +18,14 @@ public class redisServer {
     int dbnNum;
 
     public redisServer() {
-        redisDBs = new redisDB[16];
-
-        for(int i=0;i<16;++i){
-            redisDBs[i] = new redisDB();
-        }
 
         dbnNum = 16;
+
+        redisDBs = new redisDB[dbnNum];
+
+        for(int i=0;i<redisDBs.length;++i){
+            redisDBs[i] = new redisDB();
+        }
 
         clients = new ListNode<>();
     }

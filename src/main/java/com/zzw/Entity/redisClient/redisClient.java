@@ -2,7 +2,7 @@ package com.zzw.Entity.redisClient;
 
 import com.zzw.Entity.redisCommand.redisCommand;
 import com.zzw.Entity.redisServer.redisDB;
-import com.zzw.Entity.redisStruct.ListNode;
+import com.zzw.Entity.redisStruct.redisList.imp.ListNode;
 
 import java.util.Date;
 

@@ -1,6 +1,9 @@
-package com.zzw.Entity.redisStruct;
+package com.zzw.Entity.redisStruct.redisList.imp;
 
-public class ListNode<V> {
+import com.zzw.Entity.redisStruct.redisList.redisList;
+
+public class ListNode<V> implements redisList<V> {
+
     public V val;
     public ListNode next;
 

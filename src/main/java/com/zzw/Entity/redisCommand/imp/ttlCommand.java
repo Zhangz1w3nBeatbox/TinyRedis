@@ -23,6 +23,7 @@ public class ttlCommand implements redisCommand {
 
         String[] argv = client.getArgv();
         String key;
+        long sub =0;
 
         try {
             key = argv[1];
@@ -31,15 +32,20 @@ public class ttlCommand implements redisCommand {
                 return "TTL_NO_SUCH_KEY_"+REDIS_REPLY_FAIL;
             }
 
+            Long expireTime = dbExpiresDict.get(key);
+            Long currTime = new Date().getTime();
+            sub = expireTime - currTime;
+
+            if(sub<=0){
+                dict.remove(key);
+                dbExpiresDict.remove(key);
+                return "TTL_EXPIRES_"+REDIS_REPLY_FAIL;
+            }
 
         } catch (Exception e){
             return "TTL_ARGS_"+REDIS_REPLY_FAIL;
         }
 
-        Long expireTime = dbExpiresDict.get(key);
-        Long currTime = new Date().getTime();
-
-        Long sub = expireTime - currTime;
 
         return "TTL_"+sub+"_"+REDIS_REPLY_OK;
     }

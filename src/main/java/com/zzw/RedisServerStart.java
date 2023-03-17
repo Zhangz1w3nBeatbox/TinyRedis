@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import com.zzw.Entity.commanDict.cmdDict;
 import com.zzw.Entity.redisServer.redisDB;
 import com.zzw.Entity.redisServer.redisServer;
-import com.zzw.Entity.redisStruct.ListNode;
+import com.zzw.Entity.redisStruct.redisList.imp.ListNode;
 
 import static com.zzw.Entity.commanDict.cmdDict.cmdDict;
 import static com.zzw.Constans.redis_constant.*;
@@ -98,20 +98,21 @@ public class RedisServerStart {
         System.out.println(s);
 
         //把RESP文件解析
-        redisClient = decodeRESP(s);
+        redisClient redisClient1 = decodeRESP(s);
 
-        if(redisClient==null){
-            responseToClient("ERR unknown command"+"\r\n");
-        } else {
+        String msg = null;
+
+        if(redisClient1==null){
+            msg = "ERR Unknown Command!"+"\r\n";
+        }else{
             //处理解析后的文件
-            String msg = redisClient.getOutBuf()[0];
-            responseToClient(msg);
+            msg = redisClient.getOutBuf()[0];
         }
 
-
+        responseToClient(msg);
     }
 
-    private redisClient decodeRESP(String s) {
+    private redisClient decodeRESP(String s) throws IOException {
         //   *2/r/n$6/r/nselect/r/n$1/r/n1/r/n
         if(s.charAt(0)=='*'){
 
@@ -133,7 +134,9 @@ public class RedisServerStart {
 
             redisCommand redisCommand = findCmdFunction(redisClient);
 
-            if(redisCommand==null) return null;
+            if(redisCommand==null){
+                return null;
+            }
 
             redisClient.setCmd(redisCommand);
 
@@ -156,6 +159,8 @@ public class RedisServerStart {
     private redisCommand findCmdFunction(redisClient client) {
         String[] argv = client.getArgv();
         String cmd = argv[0];
+
+        if(!cmdDict.containsKey(cmd)) return null;
 
         redisCommand redisCommand = cmdDict.get(cmd);
 
@@ -215,6 +220,6 @@ public class RedisServerStart {
         redisClient.setDbIdx(REDIS_DB_DEFAULT_INDEX);
 
         ListNode<redisClient> head = redisServer.getClients();
-        head.next = new ListNode<>(redisClient);
+        head.next = new ListNode(redisClient);
     }
 }
