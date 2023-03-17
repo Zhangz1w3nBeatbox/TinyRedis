@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import com.zzw.Entity.commanDict.cmdDict;
 import com.zzw.Entity.redisServer.redisDB;
 import com.zzw.Entity.redisServer.redisServer;
+import com.zzw.Entity.redisStruct.ListNode;
 
 import static com.zzw.Entity.commanDict.cmdDict.cmdDict;
 import static com.zzw.Constans.redis_constant.*;
@@ -212,5 +213,8 @@ public class RedisServerStart {
         redisDB redisDB = redisDBs[REDIS_DB_DEFAULT_INDEX];
         redisClient.setDb(redisDB);
         redisClient.setDbIdx(REDIS_DB_DEFAULT_INDEX);
+
+        ListNode<redisClient> head = redisServer.getClients();
+        head.next = new ListNode<>(redisClient);
     }
 }
